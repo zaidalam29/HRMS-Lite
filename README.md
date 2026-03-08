@@ -148,8 +148,8 @@ LOG_LEVEL=INFO
 > ⚠️ **IMPORTANT RULES:**
 > - Password must **NOT** contain `@` symbol
 > - Use only alphanumeric characters in password
-> - ✅ Good password: `Postgres123`
-> - ❌ Bad password: `Postgres@123`
+> - Good password: `Postgres123`
+> - Bad password: `Postgres@123`
 
 ---
 

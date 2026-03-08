@@ -47,6 +47,26 @@ if settings.ENVIRONMENT == "production":
     async def get_open_api_endpoint():
         return JSONResponse(get_openapi(title="HRMS Lite API", version="1.0.0", routes=app.routes))
 
+from app.core.database import engine
+from app.models.employee import Employee
+from app.models.attendance import Attendance
+
+@app.on_event("startup")
+async def startup_event():
+    """Create tables if they don't exist"""
+    try:
+
+        if settings.ENVIRONMENT == "production":
+
+            from app.models.employee import Employee
+            from app.models.attendance import Attendance
+            
+            Employee.__table__.create(bind=engine, checkfirst=True)
+            Attendance.__table__.create(bind=engine, checkfirst=True)
+            logger.info("Database tables created/verified successfully!")
+    except Exception as e:
+        logger.error(f"Error creating tables: {e}")
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins_list,
