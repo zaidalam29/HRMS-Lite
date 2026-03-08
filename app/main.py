@@ -13,6 +13,8 @@ from typing import Union
 import traceback
 import os
 import uvicorn
+from fastapi.openapi.docs import get_swagger_ui_html
+from fastapi.openapi.utils import get_openapi
 
 from app.core.config import settings
 from app.core.exceptions import (
@@ -35,6 +37,15 @@ app = FastAPI(
     docs_url="/api/docs" if settings.ENVIRONMENT != "production" else None,
     redoc_url="/api/redoc" if settings.ENVIRONMENT != "production" else None,
 )
+
+if settings.ENVIRONMENT == "production":
+    @app.get("/api/docs", include_in_schema=False)
+    async def get_swagger_documentation():
+        return get_swagger_ui_html(openapi_url="/openapi.json", title="API Docs")
+    
+    @app.get("/openapi.json", include_in_schema=False)
+    async def get_open_api_endpoint():
+        return JSONResponse(get_openapi(title="HRMS Lite API", version="1.0.0", routes=app.routes))
 
 app.add_middleware(
     CORSMiddleware,
