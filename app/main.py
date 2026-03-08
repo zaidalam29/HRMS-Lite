@@ -11,6 +11,8 @@ import logging
 import time
 from typing import Union
 import traceback
+import os
+import uvicorn
 
 from app.core.config import settings
 from app.core.exceptions import (
@@ -235,3 +237,9 @@ async def health_check():
         "timestamp": time.time(),
         "environment": settings.ENVIRONMENT
     }
+    
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run("app.main:app", host="0.0.0.0", port=port)    
+    
